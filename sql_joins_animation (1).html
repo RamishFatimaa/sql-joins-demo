@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Joins Animation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            min-height: 100vh;
+            color: #ffffff;
+            padding: 20px;
+            font-weight: 400;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #1a1a1a;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+            border: 1px solid #9A76F4;
+        }
+
+        .header {
+            background: #1a1a1a;
+            color: #ffffff;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: #ffffff;
+        }
+
+        .header p {
+            font-size: 1rem;
+            opacity: 0.8;
+            font-weight: 300;
+            color: #cccccc;
+        }
+
+        .brand-info {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .brand-info a {
+            color: #9A76F4;
+            text-decoration: none;
+            font-weight: 400;
+            transition: opacity 0.3s ease;
+        }
+
+        .brand-info a:hover {
+            opacity: 1;
+        }
+
+        .controls {
+            padding: 20px;
+            background: #1a1a1a;
+            border-bottom: 1px solid #333333;
+            text-align: center;
+        }
+
+        .join-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .join-btn {
+            background: #1a1a1a;
+            color: #ffffff;
+            border: 1px solid #333333;
+            padding: 10px 22px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 400;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .join-btn:hover {
+            border-color: #9A76F4;
+            color: #9A76F4;
+        }
+
+        .join-btn.active {
+            background: #9A76F4;
+            border-color: #9A76F4;
+            color: #ffffff;
+        }
+
+        .speed-control {
+            margin-top: 15px;
+            color: #ffffff;
+        }
+
+        .speed-control label {
+            font-weight: 400;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+
+        .speed-slider {
+            width: 200px;
+            height: 4px;
+            background: #333333;
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .speed-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #9A76F4;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .animation-area {
+            padding: 40px;
+            min-height: 600px;
+        }
+
+        .join-info {
+            background: rgba(17, 17, 27, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #313244;
+            text-align: center;
+        }
+
+        .join-info h3 {
+            color: #8a65ff;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .join-info p {
+            color: #cdd6f4;
+            margin: 5px 0;
+        }
+
+        .join-key {
+            background: rgba(138, 101, 255, 0.3);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .sql-preview {
+            background: #11111b;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #313244;
+            font-family: 'Courier New', monospace;
+            color: #f9e2af;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        .sql-keyword {
+            color: #cba6f7;
+            font-weight: bold;
+        }
+
+        .sql-table {
+            color: #94e2d5;
+        }
+
+        .sql-column {
+            color: #89b4fa;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #313244;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8a65ff 0%, #6b46c1 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .tables-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+
+        .table-wrapper {
+            flex: 1;
+            margin: 0 20px;
+        }
+
+        .table-title {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #cdd6f4;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #181825;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border: 1px solid #313244;
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, #8a65ff 0%, #6b46c1 100%);
+            color: #ffffff;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #313244;
+            transition: all 0.3s ease;
+            color: #cdd6f4;
+        }
+
+        .data-table tr:hover {
+            background: #313244;
+        }
+
+        .highlight {
+            background: rgba(138, 101, 255, 0.3) !important;
+            transform: scale(1.02);
+            box-shadow: 0 2px 10px rgba(138, 101, 255, 0.4);
+        }
+
+        .match-highlight {
+            background: rgba(34, 197, 94, 0.3) !important;
+            transform: scale(1.02);
+            box-shadow: 0 2px 10px rgba(34, 197, 94, 0.4);
+        }
+
+        .result-section {
+            margin-top: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #8a65ff 0%, #6b46c1 100%);
+            border-radius: 15px;
+            color: #ffffff;
+        }
+
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #181825;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border: 1px solid #313244;
+            table-layout: fixed;
+        }
+
+        .result-table th {
+            background: rgba(17, 17, 27, 0.7);
+            color: #cdd6f4;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .result-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #313244;
+            color: #cdd6f4;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .new-row {
+            background: rgba(34, 197, 94, 0.2);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .explanation {
+            background: rgba(17, 17, 27, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 1.1rem;
+            text-align: center;
+            border: 1px solid rgba(205, 214, 244, 0.2);
+        }
+
+        .status {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(17, 17, 27, 0.3);
+            border-radius: 10px;
+            border: 1px solid rgba(205, 214, 244, 0.2);
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-left: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .tables-container {
+                flex-direction: column;
+            }
+            
+            .table-wrapper {
+                margin: 10px 0;
+            }
+            
+            .join-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="brand-info">
+                <a href="https://ramishfatima.com" target="_blank">ramishfatima.com</a>
+            </div>
+            <h1>SQL Joins Animation</h1>
+            <p>Interactive visualization of database joins - By Ramish Fatima</p>
+        </div>
+
+        <div class="controls">
+            <div class="join-buttons">
+                <button class="join-btn" onclick="startJoin('inner')">INNER JOIN</button>
+                <button class="join-btn" onclick="startJoin('left')">LEFT JOIN</button>
+                <button class="join-btn" onclick="startJoin('right')">RIGHT JOIN</button>
+                <button class="join-btn" onclick="startJoin('full')">FULL OUTER JOIN</button>
+            </div>
+            <div class="speed-control">
+                <label for="speed">Animation Speed:</label>
+                <input type="range" id="speed" class="speed-slider" min="500" max="2000" value="1000">
+                <span id="speed-value">1000ms</span>
+                <button class="reset-btn" onclick="resetAnimation()">Reset</button>
+            </div>
+        </div>
+
+        <div class="animation-area">
+            <div class="join-info" id="join-info" style="display: none;">
+                <h3>Join Information</h3>
+                <p>Joining <span class="join-key">customers.customer_id</span> with <span class="join-key">orders.customer_id</span></p>
+                <div class="sql-preview" id="sql-preview"></div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+
+            <div class="tables-container">
+                <div class="table-wrapper">
+                    <div class="table-title">Customers Table</div>
+                    <table class="data-table" id="customers-table">
+                        <thead>
+                            <tr>
+                                <th>customer_id</th>
+                                <th>name</th>
+                                <th>email</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customers-body">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-wrapper">
+                    <div class="table-title">Orders Table</div>
+                    <table class="data-table" id="orders-table">
+                        <thead>
+                            <tr>
+                                <th>order_id</th>
+                                <th>customer_id</th>
+                                <th>product</th>
+                                <th>amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="result-section">
+                <div class="result-title" id="result-title">Select a join type to see the result</div>
+                <div class="status" id="status">Ready to animate!</div>
+                <table class="result-table" id="result-table" style="display: none;">
+                    <thead id="result-head">
+                    </thead>
+                    <tbody id="result-body">
+                    </tbody>
+                </table>
+                <div class="explanation" id="explanation"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        const customers = [
+            { customer_id: 1, name: 'Alice Johnson', email: 'alice@email.com' },
+            { customer_id: 2, name: 'Bob Smith', email: 'bob@email.com' },
+            { customer_id: 3, name: 'Carol Davis', email: 'carol@email.com' },
+            { customer_id: 4, name: 'David Wilson', email: 'david@email.com' },
+            { customer_id: 5, name: 'Eva Brown', email: 'eva@email.com' }
+        ];
+
+        const orders = [
+            { order_id: 101, customer_id: 1, product: 'Laptop', amount: 1200 },
+            { order_id: 102, customer_id: 2, product: 'Mouse', amount: 25 },
+            { order_id: 103, customer_id: 1, product: 'Keyboard', amount: 75 },
+            { order_id: 104, customer_id: 6, product: 'Monitor', amount: 300 },
+            { order_id: 105, customer_id: 3, product: 'Headphones', amount: 150 },
+            { order_id: 106, customer_id: 7, product: 'Webcam', amount: 80 }
+        ];
+
+        let animationSpeed = 1000;
+        let currentAnimation = null;
+        let customersProcessed = 0;
+        let matchesFound = 0;
+        let resultRows = 0;
+
+        // Initialize tables
+        function initializeTables() {
+            const customersBody = document.getElementById('customers-body');
+            const ordersBody = document.getElementById('orders-body');
+
+            customersBody.innerHTML = '';
+            ordersBody.innerHTML = '';
+
+            customers.forEach(customer => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${customer.customer_id}</td>
+                    <td>${customer.name}</td>
+                    <td>${customer.email}</td>
+                `;
+                customersBody.appendChild(row);
+            });
+
+            orders.forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.order_id}</td>
+                    <td>${order.customer_id}</td>
+                    <td>${order.product}</td>
+                    <td>$${order.amount}</td>
+                `;
+                ordersBody.appendChild(row);
+            });
+        }
+
+        // Clear highlights
+        function clearHighlights() {
+            document.querySelectorAll('.highlight, .match-highlight').forEach(el => {
+                el.classList.remove('highlight', 'match-highlight');
+            });
+        }
+
+        // Reset animation
+        function resetAnimation() {
+            if (currentAnimation) {
+                clearTimeout(currentAnimation);
+            }
+            clearHighlights();
+            document.getElementById('join-info').style.display = 'none';
+            document.getElementById('result-table').style.display = 'none';
+            document.getElementById('result-title').textContent = 'Select a join type to see the result';
+            document.getElementById('status').textContent = 'Ready to animate!';
+            document.getElementById('progress-fill').style.width = '0%';
+            document.querySelectorAll('.join-btn').forEach(btn => btn.classList.remove('active'));
+            customersProcessed = 0;
+            matchesFound = 0;
+            resultRows = 0;
+        }
+
+        // Update progress bar
+        function updateProgress(current, total) {
+            const percentage = (current / total) * 100;
+            document.getElementById('progress-fill').style.width = percentage + '%';
+        }
+
+        // Update speed
+        document.getElementById('speed').addEventListener('input', function() {
+            animationSpeed = this.value;
+            document.getElementById('speed-value').textContent = this.value + 'ms';
+        });
+
+        // Start join animation
+        async function startJoin(joinType) {
+            if (currentAnimation) {
+                clearTimeout(currentAnimation);
+            }
+
+            // Reset active button
+            document.querySelectorAll('.join-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            clearHighlights();
+            
+            const resultTable = document.getElementById('result-table');
+            const resultTitle = document.getElementById('result-title');
+            const resultHead = document.getElementById('result-head');
+            const resultBody = document.getElementById('result-body');
+            const status = document.getElementById('status');
+            const explanation = document.getElementById('explanation');
+            const joinInfo = document.getElementById('join-info');
+            const sqlPreview = document.getElementById('sql-preview');
+
+            // Show join info
+            joinInfo.style.display = 'block';
+            
+            // Reset counters
+            customersProcessed = 0;
+            matchesFound = 0;
+            resultRows = 0;
+            
+            // Generate SQL preview
+            const sqlQueries = {
+                inner: `<span class="sql-keyword">SELECT</span> c.customer_id, c.name, c.email, o.order_id, o.product, o.amount<br><span class="sql-keyword">FROM</span> <span class="sql-table">customers</span> c<br><span class="sql-keyword">INNER JOIN</span> <span class="sql-table">orders</span> o <span class="sql-keyword">ON</span> <span class="sql-column">c.customer_id</span> = <span class="sql-column">o.customer_id</span>;`,
+                left: `<span class="sql-keyword">SELECT</span> c.customer_id, c.name, c.email, o.order_id, o.product, o.amount<br><span class="sql-keyword">FROM</span> <span class="sql-table">customers</span> c<br><span class="sql-keyword">LEFT JOIN</span> <span class="sql-table">orders</span> o <span class="sql-keyword">ON</span> <span class="sql-column">c.customer_id</span> = <span class="sql-column">o.customer_id</span>;`,
+                right: `<span class="sql-keyword">SELECT</span> c.customer_id, c.name, c.email, o.order_id, o.product, o.amount<br><span class="sql-keyword">FROM</span> <span class="sql-table">customers</span> c<br><span class="sql-keyword">RIGHT JOIN</span> <span class="sql-table">orders</span> o <span class="sql-keyword">ON</span> <span class="sql-column">c.customer_id</span> = <span class="sql-column">o.customer_id</span>;`,
+                full: `<span class="sql-keyword">SELECT</span> c.customer_id, c.name, c.email, o.order_id, o.product, o.amount<br><span class="sql-keyword">FROM</span> <span class="sql-table">customers</span> c<br><span class="sql-keyword">FULL OUTER JOIN</span> <span class="sql-table">orders</span> o <span class="sql-keyword">ON</span> <span class="sql-column">c.customer_id</span> = <span class="sql-column">o.customer_id</span>;`
+            };
+
+            sqlPreview.innerHTML = sqlQueries[joinType];
+
+            // Setup result table
+            resultTable.style.display = 'table';
+            resultTitle.textContent = `${joinType.toUpperCase()} JOIN Result`;
+            resultHead.innerHTML = `
+                <tr>
+                    <th>customer_id</th>
+                    <th>name</th>
+                    <th>email</th>
+                    <th>order_id</th>
+                    <th>product</th>
+                    <th>amount</th>
+                </tr>
+            `;
+            resultBody.innerHTML = '';
+
+            // Set explanation
+            const explanations = {
+                inner: "INNER JOIN returns only rows where there's a match in both tables. Notice how customers without orders and orders without matching customers are excluded.",
+                left: "LEFT JOIN returns all rows from the left table (Customers) and matched rows from the right table (Orders). Customers without orders show NULL values.",
+                right: "RIGHT JOIN returns all rows from the right table (Orders) and matched rows from the left table (Customers). Orders without matching customers show NULL values.",
+                full: "FULL OUTER JOIN returns all rows from both tables. Where there's no match, NULL values are shown for the missing side."
+            };
+
+            explanation.textContent = explanations[joinType];
+
+            // Perform the join animation
+            await animateJoin(joinType, status, resultBody);
+        }
+
+        async function animateJoin(joinType, status, resultBody) {
+            const customerRows = document.querySelectorAll('#customers-body tr');
+            const orderRows = document.querySelectorAll('#orders-body tr');
+
+            status.textContent = `Starting ${joinType.toUpperCase()} JOIN...`;
+            await sleep(animationSpeed);
+
+            let processedOrders = new Set();
+            let currentStep = 0;
+
+            // Process each customer
+            for (let i = 0; i < customers.length; i++) {
+                const customer = customers[i];
+                const customerRow = customerRows[i];
+
+                // Highlight current customer
+                customerRow.classList.add('highlight');
+                customersProcessed++;
+                currentStep++;
+                updateProgress(currentStep, customers.length);
+                
+                status.textContent = `Processing customer: ${customer.name} (ID: ${customer.customer_id})`;
+                await sleep(animationSpeed);
+
+                // Find matching orders for this customer
+                const matchingOrders = orders.filter(order => order.customer_id === customer.customer_id);
+
+                if (matchingOrders.length > 0) {
+                    // Customer has orders - process each one
+                    for (const order of matchingOrders) {
+                        const orderIndex = orders.findIndex(o => o.order_id === order.order_id);
+                        const orderRow = orderRows[orderIndex];
+
+                        // Highlight matching order
+                        orderRow.classList.add('match-highlight');
+                        matchesFound++;
+                        
+                        status.textContent = `✓ Match found: ${customer.name} → ${order.product} (${order.amount})`;
+                        await sleep(animationSpeed);
+
+                        // Add to result table
+                        const resultRow = document.createElement('tr');
+                        resultRow.classList.add('new-row');
+                        resultRow.innerHTML = `
+                            <td>${customer.customer_id}</td>
+                            <td>${customer.name}</td>
+                            <td>${customer.email}</td>
+                            <td>${order.order_id}</td>
+                            <td>${order.product}</td>
+                            <td>${order.amount}</td>
+                        `;
+                        resultBody.appendChild(resultRow);
+                        resultRows++;
+
+                        processedOrders.add(order.order_id);
+                        await sleep(animationSpeed / 2);
+
+                        orderRow.classList.remove('match-highlight');
+                    }
+                } else {
+                    // Customer has no orders
+                    status.textContent = `✗ No orders found for ${customer.name}`;
+                    await sleep(animationSpeed);
+
+                    // Only add to result for LEFT JOIN and FULL OUTER JOIN
+                    if (joinType === 'left' || joinType === 'full') {
+                        const resultRow = document.createElement('tr');
+                        resultRow.classList.add('new-row');
+                        resultRow.innerHTML = `
+                            <td>${customer.customer_id}</td>
+                            <td>${customer.name}</td>
+                            <td>${customer.email}</td>
+                            <td style="color: #666;">NULL</td>
+                            <td style="color: #666;">NULL</td>
+                            <td style="color: #666;">NULL</td>
+                        `;
+                        resultBody.appendChild(resultRow);
+                        resultRows++;
+                        await sleep(animationSpeed / 2);
+                    }
+                    // For INNER JOIN: do nothing (exclude this customer)
+                }
+
+                customerRow.classList.remove('highlight');
+            }
+
+            // For RIGHT JOIN and FULL OUTER JOIN, process unmatched orders
+            if (joinType === 'right' || joinType === 'full') {
+                status.textContent = 'Processing unmatched orders...';
+                await sleep(animationSpeed);
+
+                for (let i = 0; i < orders.length; i++) {
+                    const order = orders[i];
+                    
+                    if (!processedOrders.has(order.order_id)) {
+                        const orderRow = orderRows[i];
+                        orderRow.classList.add('highlight');
+                        status.textContent = `✗ Unmatched order: ${order.product} (Customer ID: ${order.customer_id} not found)`;
+                        await sleep(animationSpeed);
+
+                        const resultRow = document.createElement('tr');
+                        resultRow.classList.add('new-row');
+                        resultRow.innerHTML = `
+                            <td style="color: #666;">NULL</td>
+                            <td style="color: #666;">NULL</td>
+                            <td style="color: #666;">NULL</td>
+                            <td>${order.order_id}</td>
+                            <td>${order.product}</td>
+                            <td>${order.amount}</td>
+                        `;
+                        resultBody.appendChild(resultRow);
+                        resultRows++;
+                        await sleep(animationSpeed / 2);
+
+                        orderRow.classList.remove('highlight');
+                    }
+                }
+            }
+
+            updateProgress(customers.length, customers.length);
+            status.textContent = `🎉 ${joinType.toUpperCase()} JOIN completed! Final result: ${resultRows} rows`;
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // Initialize the demo
+        initializeTables();
+    </script>
+</body>
+</html>
