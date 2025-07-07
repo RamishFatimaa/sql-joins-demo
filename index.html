@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SQL Joins Animation</title>
+    <title>SQL Joins Dashboard</title>
     <style>
         * {
             margin: 0;
@@ -14,88 +14,84 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #0a0a0a;
+            color: #ffffff;
             min-height: 100vh;
-            color: #ffffff;
-            padding: 20px;
-            font-weight: 400;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            gap: 1rem;
+            padding: 1rem;
             background: #1a1a1a;
-            border-radius: 20px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            overflow: hidden;
-            border: 1px solid #9A76F4;
         }
 
-        .header {
-            background: #1a1a1a;
-            color: #ffffff;
-            padding: 40px 30px;
+        /* Header Panel */
+        .header-panel {
+            background: linear-gradient(135deg, #9A76F4 0%, #6b46c1 100%);
+            border-radius: 12px;
+            padding: 1rem;
             text-align: center;
             position: relative;
+            flex-shrink: 0;
         }
 
-        .header h1 {
-            font-size: 2.2rem;
-            margin-bottom: 10px;
-            font-weight: 500;
-            color: #ffffff;
+        .header-panel h1 {
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
         }
 
-        .header p {
-            font-size: 1rem;
-            opacity: 0.8;
-            font-weight: 300;
-            color: #cccccc;
+        .header-panel p {
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            opacity: 0.9;
         }
 
         .brand-info {
             position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 0.85rem;
+            top: 0.75rem;
+            right: 1rem;
+            font-size: 0.8rem;
             opacity: 0.8;
         }
 
         .brand-info a {
-            color: #9A76F4;
+            color: #ffffff;
             text-decoration: none;
-            font-weight: 400;
-            transition: opacity 0.3s ease;
         }
 
-        .brand-info a:hover {
-            opacity: 1;
-        }
-
-        .controls {
-            padding: 20px;
-            background: #1a1a1a;
-            border-bottom: 1px solid #333333;
-            text-align: center;
+        /* Controls Panel */
+        .controls-panel {
+            background: #0a0a0a;
+            border: 1px solid #313244;
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-shrink: 0;
         }
 
         .join-buttons {
             display: flex;
-            gap: 15px;
-            justify-content: center;
             flex-wrap: wrap;
-            margin-bottom: 20px;
+            gap: 0.75rem;
         }
 
         .join-btn {
             background: #1a1a1a;
             color: #ffffff;
-            border: 1px solid #333333;
-            padding: 10px 22px;
-            border-radius: 25px;
+            border: 1px solid #313244;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: 400;
-            font-size: 0.9rem;
+            font-weight: 500;
+            font-size: 0.85rem;
             transition: all 0.3s ease;
+            white-space: nowrap;
         }
 
         .join-btn:hover {
@@ -109,21 +105,18 @@
             color: #ffffff;
         }
 
-        .speed-control {
-            margin-top: 15px;
-            color: #ffffff;
-        }
-
-        .speed-control label {
-            font-weight: 400;
-            margin-right: 10px;
-            font-size: 0.9rem;
+        .speed-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #cdd6f4;
+            flex-wrap: wrap;
         }
 
         .speed-slider {
-            width: 200px;
+            width: 100px;
             height: 4px;
-            background: #333333;
+            background: #313244;
             border-radius: 2px;
             outline: none;
             -webkit-appearance: none;
@@ -131,7 +124,6 @@
 
         .speed-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            appearance: none;
             width: 16px;
             height: 16px;
             background: #9A76F4;
@@ -139,123 +131,73 @@
             cursor: pointer;
         }
 
-        .animation-area {
-            padding: 40px;
-            min-height: 600px;
-        }
-
-        .join-info {
-            background: rgba(17, 17, 27, 0.5);
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            border: 1px solid #313244;
-            text-align: center;
-        }
-
-        .join-info h3 {
-            color: #8a65ff;
-            margin-bottom: 10px;
-            font-size: 1.2rem;
-        }
-
-        .join-info p {
-            color: #cdd6f4;
-            margin: 5px 0;
-        }
-
-        .join-key {
-            background: rgba(138, 101, 255, 0.3);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
+        .reset-btn {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
             color: #ffffff;
-        }
-
-        .sql-preview {
-            background: #11111b;
-            padding: 15px;
+            border: none;
+            padding: 0.5rem 1rem;
             border-radius: 8px;
-            margin: 15px 0;
-            border: 1px solid #313244;
-            font-family: 'Courier New', monospace;
-            color: #f9e2af;
-            font-size: 0.9rem;
-            text-align: left;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
         }
 
-        .sql-keyword {
-            color: #cba6f7;
-            font-weight: bold;
-        }
-
-        .sql-table {
-            color: #94e2d5;
-        }
-
-        .sql-column {
-            color: #89b4fa;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: #313244;
-            border-radius: 3px;
-            overflow: hidden;
-            margin: 15px 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #8a65ff 0%, #6b46c1 100%);
-            width: 0%;
-            transition: width 0.5s ease;
-        }
-
-        .tables-container {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 40px;
-        }
-
-        .table-wrapper {
+        /* Main Content Area */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
             flex: 1;
-            margin: 0 20px;
+            min-height: 0;
         }
 
-        .table-title {
+        /* Source Data Panels */
+        .source-panel {
+            background: #0a0a0a;
+            border: 1px solid #313244;
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            min-height: 400px;
+        }
+
+        .panel-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #9A76F4;
+            margin-bottom: 0.75rem;
             text-align: center;
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: #cdd6f4;
+        }
+
+        .data-card {
+            background: #000000;
+            border: 1px solid #313244;
+            border-radius: 8px;
+            overflow: hidden;
+            flex: 1;
         }
 
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            background: #181825;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            border: 1px solid #313244;
+            font-size: 0.8rem;
         }
 
         .data-table th {
-            background: linear-gradient(135deg, #8a65ff 0%, #6b46c1 100%);
+            background: #9A76F4;
             color: #ffffff;
-            padding: 15px;
+            padding: 0.75rem 0.5rem;
             text-align: left;
             font-weight: 600;
+            font-size: 0.75rem;
         }
 
         .data-table td {
-            padding: 12px 15px;
+            padding: 0.75rem 0.5rem;
             border-bottom: 1px solid #313244;
-            transition: all 0.3s ease;
             color: #cdd6f4;
+            transition: all 0.3s ease;
         }
 
         .data-table tr:hover {
@@ -265,60 +207,85 @@
         .highlight {
             background: rgba(138, 101, 255, 0.3) !important;
             transform: scale(1.02);
-            box-shadow: 0 2px 10px rgba(138, 101, 255, 0.4);
+            box-shadow: 0 2px 8px rgba(138, 101, 255, 0.4);
         }
 
         .match-highlight {
             background: rgba(34, 197, 94, 0.3) !important;
             transform: scale(1.02);
-            box-shadow: 0 2px 10px rgba(34, 197, 94, 0.4);
+            box-shadow: 0 2px 8px rgba(34, 197, 94, 0.4);
         }
 
-        .result-section {
-            margin-top: 40px;
-            padding: 30px;
-            background: linear-gradient(135deg, #8a65ff 0%, #6b46c1 100%);
-            border-radius: 15px;
-            color: #ffffff;
+        /* Results Panel */
+        .results-panel {
+            background: #0a0a0a;
+            border: 1px solid #22c55e;
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            min-height: 400px;
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 1rem;
         }
 
         .result-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #22c55e;
+        }
+
+        .results-panel .status {
             text-align: center;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #cdd6f4;
+            margin-bottom: 1rem;
+        }
+
+        .results-panel .explanation {
+            display: none;
+            text-align: center;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            color: #cdd6f4;
+            font-style: italic;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: rgba(17, 17, 27, 0.3);
+            border-radius: 8px;
+            border: 1px solid #313244;
+        }
+
+        .result-content {
+            flex: 1;
+            overflow: auto;
         }
 
         .result-table {
             width: 100%;
             border-collapse: collapse;
-            background: #181825;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            border: 1px solid #313244;
-            table-layout: fixed;
+            font-size: 0.8rem;
         }
 
         .result-table th {
-            background: rgba(17, 17, 27, 0.7);
-            color: #cdd6f4;
-            padding: 15px;
+            background: #22c55e;
+            color: #ffffff;
+            padding: 0.75rem 0.5rem;
             text-align: left;
             font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-size: 0.75rem;
+            position: sticky;
+            top: 0;
         }
 
         .result-table td {
-            padding: 12px 15px;
+            padding: 0.5rem;
             border-bottom: 1px solid #313244;
             color: #cdd6f4;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .new-row {
@@ -329,7 +296,7 @@
         @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(-20px);
+                transform: translateY(-10px);
             }
             to {
                 opacity: 1;
@@ -337,120 +304,193 @@
             }
         }
 
-        .explanation {
-            background: rgba(17, 17, 27, 0.3);
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-            font-size: 1.1rem;
-            text-align: center;
-            border: 1px solid rgba(205, 214, 244, 0.2);
+        /* Join Information Panel - Below Tables */
+        .join-info-panel {
+            background: #0a0a0a;
+            border: 1px solid #9A76F4;
+            border-radius: 12px;
+            padding: 1rem;
+            flex-shrink: 0;
+            display: none;
         }
 
-        .status {
-            text-align: center;
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin: 20px 0;
-            padding: 15px;
-            background: rgba(17, 17, 27, 0.3);
-            border-radius: 10px;
-            border: 1px solid rgba(205, 214, 244, 0.2);
+        .join-info-panel.active {
+            display: block;
         }
 
-        .reset-btn {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        .join-info-panel h3 {
+            color: #9A76F4;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .join-info-panel p {
+            text-align: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .join-key {
+            background: rgba(138, 101, 255, 0.3);
+            padding: 0.125rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
             color: #ffffff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            margin-left: 15px;
-            transition: all 0.3s ease;
+            font-size: 0.8rem;
         }
 
-        .reset-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+        .join-info-panel pre {
+            background: #000000;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid #313244;
+            font-family: 'Courier New', monospace;
+            color: #f9e2af;
+            font-size: 0.75rem;
+            margin-bottom: 0.75rem;
+            overflow-x: auto;
+        }
+
+        .join-info-panel .explanation {
+            text-align: center;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            color: #cdd6f4;
+            font-style: italic;
+            margin-bottom: 0;
+        }
+
+        .sql-keyword { color: #cba6f7; font-weight: bold; }
+        .sql-table { color: #94e2d5; }
+        .sql-column { color: #89b4fa; }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto auto;
+            }
+            
+            .results-panel {
+                grid-column: 1 / -1;
+            }
         }
 
         @media (max-width: 768px) {
-            .tables-container {
-                flex-direction: column;
+            .dashboard {
+                padding: 0.75rem;
+                gap: 0.75rem;
             }
             
-            .table-wrapper {
-                margin: 10px 0;
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+            
+            .controls-panel {
+                flex-direction: column;
+                text-align: center;
             }
             
             .join-buttons {
+                justify-content: center;
+            }
+            
+            .speed-controls {
+                justify-content: center;
+            }
+            
+            .brand-info {
+                position: static;
+                margin-top: 0.5rem;
+            }
+            
+            .source-panel, .results-panel {
+                min-height: 300px;
+            }
+            
+            .data-table th, .data-table td,
+            .result-table th, .result-table td {
+                padding: 0.5rem 0.25rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .join-buttons {
                 flex-direction: column;
-                align-items: center;
+                width: 100%;
+            }
+            
+            .join-btn {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .speed-controls {
+                flex-direction: column;
+                gap: 0.5rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
+    <div class="dashboard">
+        <!-- Header Panel -->
+        <div class="header-panel">
             <div class="brand-info">
                 <a href="https://ramishfatima.com" target="_blank">ramishfatima.com</a>
             </div>
-            <h1>SQL Joins Animation</h1>
             <p>Interactive visualization of database joins - By Ramish Fatima</p>
         </div>
 
-        <div class="controls">
+        <!-- Controls Panel -->
+        <div class="controls-panel">
             <div class="join-buttons">
                 <button class="join-btn" onclick="startJoin('inner')">INNER JOIN</button>
                 <button class="join-btn" onclick="startJoin('left')">LEFT JOIN</button>
                 <button class="join-btn" onclick="startJoin('right')">RIGHT JOIN</button>
                 <button class="join-btn" onclick="startJoin('full')">FULL OUTER JOIN</button>
             </div>
-            <div class="speed-control">
-                <label for="speed">Animation Speed:</label>
+            <div class="speed-controls">
+                <label>Speed:</label>
                 <input type="range" id="speed" class="speed-slider" min="500" max="2000" value="1000">
                 <span id="speed-value">1000ms</span>
                 <button class="reset-btn" onclick="resetAnimation()">Reset</button>
             </div>
         </div>
 
-        <div class="animation-area">
-            <div class="join-info" id="join-info" style="display: none;">
-                <h3>Join Information</h3>
-                <p>Joining <span class="join-key">customers.customer_id</span> with <span class="join-key">orders.customer_id</span></p>
-                <div class="sql-preview" id="sql-preview"></div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progress-fill"></div>
-                </div>
-            </div>
-
-            <div class="tables-container">
-                <div class="table-wrapper">
-                    <div class="table-title">Customers Table</div>
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Source Data Panels -->
+            <div class="source-panel">
+                <div class="panel-title">Customers Table</div>
+                <div class="data-card">
                     <table class="data-table" id="customers-table">
                         <thead>
                             <tr>
-                                <th>customer_id</th>
-                                <th>name</th>
-                                <th>email</th>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
                             </tr>
                         </thead>
                         <tbody id="customers-body">
                         </tbody>
                     </table>
                 </div>
+            </div>
 
-                <div class="table-wrapper">
-                    <div class="table-title">Orders Table</div>
+            <div class="source-panel">
+                <div class="panel-title">Orders Table</div>
+                <div class="data-card">
                     <table class="data-table" id="orders-table">
                         <thead>
                             <tr>
-                                <th>order_id</th>
-                                <th>customer_id</th>
-                                <th>product</th>
-                                <th>amount</th>
+                                <th>Order ID</th>
+                                <th>Customer ID</th>
+                                <th>Product</th>
+                                <th>Amount</th>
                             </tr>
                         </thead>
                         <tbody id="orders-body">
@@ -459,17 +499,31 @@
                 </div>
             </div>
 
-            <div class="result-section">
-                <div class="result-title" id="result-title">Select a join type to see the result</div>
-                <div class="status" id="status">Ready to animate!</div>
-                <table class="result-table" id="result-table" style="display: none;">
-                    <thead id="result-head">
-                    </thead>
-                    <tbody id="result-body">
-                    </tbody>
-                </table>
-                <div class="explanation" id="explanation"></div>
+            <!-- Results Panel -->
+            <div class="results-panel">
+                <div class="result-header">
+                    <div class="result-title" id="result-title">Results</div>
+                </div>
+                
+                <div class="status" id="status">Select a join type to begin</div>
+                
+                <div class="result-content">
+                    <table class="result-table" id="result-table" style="display: none;">
+                        <thead id="result-head">
+                        </thead>
+                        <tbody id="result-body">
+                        </tbody>
+                    </table>
+                </div>
             </div>
+        </div>
+
+        <!-- Join Information Panel - Below all tables -->
+        <div class="join-info-panel" id="join-info-panel">
+            <h3>Join Information</h3>
+            <p>Joining <span class="join-key">customers.customer_id</span> with <span class="join-key">orders.customer_id</span></p>
+            <pre id="sql-preview"></pre>
+            <p class="explanation" id="explanation"></p>
         </div>
     </div>
 
@@ -487,15 +541,13 @@
             { order_id: 101, customer_id: 1, product: 'Laptop', amount: 1200 },
             { order_id: 102, customer_id: 2, product: 'Mouse', amount: 25 },
             { order_id: 103, customer_id: 1, product: 'Keyboard', amount: 75 },
-            { order_id: 104, customer_id: 6, product: 'Monitor', amount: 300 },
+            { order_id: 104, customer_id: 6, product: 'Monitor', amount: 900 },
             { order_id: 105, customer_id: 3, product: 'Headphones', amount: 150 },
-            { order_id: 106, customer_id: 7, product: 'Webcam', amount: 80 }
+            { order_id: 106, customer_id: 7, product: 'Webcam', amount: 60 }
         ];
 
         let animationSpeed = 1000;
         let currentAnimation = null;
-        let customersProcessed = 0;
-        let matchesFound = 0;
         let resultRows = 0;
 
         // Initialize tables
@@ -541,22 +593,15 @@
                 clearTimeout(currentAnimation);
             }
             clearHighlights();
-            document.getElementById('join-info').style.display = 'none';
+            document.getElementById('join-info-panel').classList.remove('active');
             document.getElementById('result-table').style.display = 'none';
-            document.getElementById('result-title').textContent = 'Select a join type to see the result';
-            document.getElementById('status').textContent = 'Ready to animate!';
-            document.getElementById('progress-fill').style.width = '0%';
+            document.getElementById('result-title').textContent = 'Results';
+            document.getElementById('status').textContent = 'Select a join type to begin';
             document.querySelectorAll('.join-btn').forEach(btn => btn.classList.remove('active'));
-            customersProcessed = 0;
-            matchesFound = 0;
             resultRows = 0;
         }
 
-        // Update progress bar
-        function updateProgress(current, total) {
-            const percentage = (current / total) * 100;
-            document.getElementById('progress-fill').style.width = percentage + '%';
-        }
+
 
         // Update speed
         document.getElementById('speed').addEventListener('input', function() {
@@ -582,15 +627,13 @@
             const resultBody = document.getElementById('result-body');
             const status = document.getElementById('status');
             const explanation = document.getElementById('explanation');
-            const joinInfo = document.getElementById('join-info');
             const sqlPreview = document.getElementById('sql-preview');
+            const joinInfoPanel = document.getElementById('join-info-panel');
 
-            // Show join info
-            joinInfo.style.display = 'block';
+            // Show join info panel
+            joinInfoPanel.classList.add('active');
             
             // Reset counters
-            customersProcessed = 0;
-            matchesFound = 0;
             resultRows = 0;
             
             // Generate SQL preview
@@ -608,31 +651,31 @@
             resultTitle.textContent = `${joinType.toUpperCase()} JOIN Result`;
             resultHead.innerHTML = `
                 <tr>
-                    <th>customer_id</th>
-                    <th>name</th>
-                    <th>email</th>
-                    <th>order_id</th>
-                    <th>product</th>
-                    <th>amount</th>
+                    <th>Customer ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Order ID</th>
+                    <th>Product</th>
+                    <th>Amount</th>
                 </tr>
             `;
             resultBody.innerHTML = '';
 
             // Set explanation
             const explanations = {
-                inner: "INNER JOIN returns only rows where there's a match in both tables. Notice how customers without orders and orders without matching customers are excluded.",
-                left: "LEFT JOIN returns all rows from the left table (Customers) and matched rows from the right table (Orders). Customers without orders show NULL values.",
-                right: "RIGHT JOIN returns all rows from the right table (Orders) and matched rows from the left table (Customers). Orders without matching customers show NULL values.",
-                full: "FULL OUTER JOIN returns all rows from both tables. Where there's no match, NULL values are shown for the missing side."
+                inner: "Returns only rows where there's a match in both tables.",
+                left: "Returns all rows from the left table (Customers) and matched rows from the right table.",
+                right: "Returns all rows from the right table (Orders) and matched rows from the left table.",
+                full: "Returns all rows from both tables. Where there's no match, NULL values are shown."
             };
 
             explanation.textContent = explanations[joinType];
 
             // Perform the join animation
-            await animateJoin(joinType, status, resultBody);
+            await animateJoin(joinType, status, resultBody, resultTitle);
         }
 
-        async function animateJoin(joinType, status, resultBody) {
+        async function animateJoin(joinType, status, resultBody, resultTitle) {
             const customerRows = document.querySelectorAll('#customers-body tr');
             const orderRows = document.querySelectorAll('#orders-body tr');
 
@@ -640,7 +683,6 @@
             await sleep(animationSpeed);
 
             let processedOrders = new Set();
-            let currentStep = 0;
 
             // Process each customer
             for (let i = 0; i < customers.length; i++) {
@@ -649,11 +691,8 @@
 
                 // Highlight current customer
                 customerRow.classList.add('highlight');
-                customersProcessed++;
-                currentStep++;
-                updateProgress(currentStep, customers.length);
                 
-                status.textContent = `Processing customer: ${customer.name} (ID: ${customer.customer_id})`;
+                status.textContent = `Processing: ${customer.name} (ID: ${customer.customer_id})`;
                 await sleep(animationSpeed);
 
                 // Find matching orders for this customer
@@ -667,9 +706,8 @@
 
                         // Highlight matching order
                         orderRow.classList.add('match-highlight');
-                        matchesFound++;
                         
-                        status.textContent = `✓ Match found: ${customer.name} → ${order.product} (${order.amount})`;
+                        status.textContent = `✓ Match: ${customer.name} → ${order.product} ($${order.amount})`;
                         await sleep(animationSpeed);
 
                         // Add to result table
@@ -681,19 +719,21 @@
                             <td>${customer.email}</td>
                             <td>${order.order_id}</td>
                             <td>${order.product}</td>
-                            <td>${order.amount}</td>
+                            <td>$${order.amount}</td>
                         `;
                         resultBody.appendChild(resultRow);
                         resultRows++;
+                        resultTitle.textContent = `${joinType.toUpperCase()} JOIN Result (${resultRows} rows)`;
 
                         processedOrders.add(order.order_id);
-                        await sleep(animationSpeed / 2);
+                        await sleep(animationSpeed * 0.3);
 
                         orderRow.classList.remove('match-highlight');
+                        await sleep(animationSpeed * 0.2);
                     }
                 } else {
                     // Customer has no orders
-                    status.textContent = `✗ No orders found for ${customer.name}`;
+                    status.textContent = `✗ No orders for ${customer.name}`;
                     await sleep(animationSpeed);
 
                     // Only add to result for LEFT JOIN and FULL OUTER JOIN
@@ -710,12 +750,13 @@
                         `;
                         resultBody.appendChild(resultRow);
                         resultRows++;
-                        await sleep(animationSpeed / 2);
+                        resultTitle.textContent = `${joinType.toUpperCase()} JOIN Result (${resultRows} rows)`;
+                        await sleep(animationSpeed * 0.3);
                     }
-                    // For INNER JOIN: do nothing (exclude this customer)
                 }
 
                 customerRow.classList.remove('highlight');
+                await sleep(animationSpeed * 0.2);
             }
 
             // For RIGHT JOIN and FULL OUTER JOIN, process unmatched orders
@@ -729,7 +770,7 @@
                     if (!processedOrders.has(order.order_id)) {
                         const orderRow = orderRows[i];
                         orderRow.classList.add('highlight');
-                        status.textContent = `✗ Unmatched order: ${order.product} (Customer ID: ${order.customer_id} not found)`;
+                        status.textContent = `✗ Unmatched order: ${order.product} (Customer ID: ${order.customer_id})`;
                         await sleep(animationSpeed);
 
                         const resultRow = document.createElement('tr');
@@ -740,19 +781,21 @@
                             <td style="color: #666;">NULL</td>
                             <td>${order.order_id}</td>
                             <td>${order.product}</td>
-                            <td>${order.amount}</td>
+                            <td>$${order.amount}</td>
                         `;
                         resultBody.appendChild(resultRow);
                         resultRows++;
-                        await sleep(animationSpeed / 2);
+                        resultTitle.textContent = `${joinType.toUpperCase()} JOIN Result (${resultRows} rows)`;
+                        await sleep(animationSpeed * 0.3);
 
                         orderRow.classList.remove('highlight');
+                        await sleep(animationSpeed * 0.2);
                     }
                 }
             }
 
-            updateProgress(customers.length, customers.length);
-            status.textContent = `🎉 ${joinType.toUpperCase()} JOIN completed! Final result: ${resultRows} rows`;
+            status.textContent = `🎉 ${joinType.toUpperCase()} JOIN completed!`;
+            resultTitle.textContent = `${joinType.toUpperCase()} JOIN Result (${resultRows} rows)`;
         }
 
         function sleep(ms) {
