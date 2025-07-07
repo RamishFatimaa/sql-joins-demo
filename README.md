@@ -28,7 +28,7 @@ This setup shows how joins handle matched and unmatched records.
 
 ## Live demo
 
-[View here](https://ramishfatima.github.io/sql-joins-demo) 
+[View here](https://ramishfatimaa.github.io/sql-joins-demo/) 
 
 ---
 
